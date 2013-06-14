@@ -23,6 +23,7 @@
 			_turnOnLocation();
 			_turnOnWebCam();
 			_startPolling();
+			lightning();
 		}
 
 		function _turnOnWebCam() {
@@ -75,17 +76,13 @@
 				return true;
 
 			// The computer is plugged in, but it is fully charged. battery.charging reports as false in this case
-			} else if ( battery.charging === false && battery.chargingTime === Number.POSITIVE_INFINITY ) {
+			} else if ( battery.charging === false && battery.dischargingTime === Number.POSITIVE_INFINITY ) {
 				return true;
 
 			// All other results indicated no charging
 			} else {
 				return false;
 			}
-		}
-
-		function _notCharging() {
-
 		}
 
 		return {
