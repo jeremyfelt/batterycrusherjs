@@ -15,7 +15,7 @@
 			_bindEvents();
 			_updateBatteryProgress();
 
-			if( battery.charging === false && battery.dischargingTime !== Number.POSITIVE_INFINITY ) {
+			if( ! _charging() ) {
 				fire.style.display = 'block';
 			}
 
@@ -39,9 +39,7 @@
 		}
 
 		function _onBatteryStateChange() {
-			var status = battery.charging;
-
-			if( status === true ) {
+			if( ! _charging() ) {
 				fire.style.display = 'none';
 			}
 			else {
@@ -69,6 +67,25 @@
 
 		function _startPolling() {
 			//
+		}
+
+		function _charging() {
+			// The computer is plugged in and it is charging
+			if ( battery.charging === true ) {
+				return true;
+
+			// The computer is plugged in, but it is fully charged. battery.charging reports as false in this case
+			} else if ( battery.charging === false && battery.chargingTime === Number.POSITIVE_INFINITY ) {
+				return true;
+
+			// All other results indicated no charging
+			} else {
+				return false;
+			}
+		}
+
+		function _notCharging() {
+
 		}
 
 		return {
