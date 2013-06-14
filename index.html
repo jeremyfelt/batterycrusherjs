@@ -2,13 +2,40 @@
 <html>
 <head>
 	<style>
-		body {
-			background: url(http://en.xn--icne-wqa.com/images/icones/8/3/pictograms-aem-0029-battery-explosion.png) no-repeat center center #fff;
+		.batteryCRUSHER {
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			margin: -75px 0 0 -60px;
+		}
+		.batteryCRUSHER img.battery {
+			display: block;
+			margin: 0 0 10px 0;
+			position: relative;
+			z-index: 0;
+		}
+		.batteryCRUSHER img.fire {
+			position: absolute;
+			top: -29px;
+			left: -4px;
+			z-index: 1;
+			width: 120px;
+			display: none;
+		}
+		#battery-level {
+			text-align: center;
+			font-size: 52px;
+			font-family: sans-serif;
 		}
 	</style>
 	<script type="text/javascript" src="./js/batterycrusher.js"></script>
 </head>
 <body>
-
+	<div class="batteryCRUSHER">
+		<img id="fire" class="fire" src="./images/fire.gif"/>
+		<img class="battery" src="./images/battery-crusher.jpg"/>
+		<div id="battery-level">---</div>
+		<script>batterycrusherjs.killBattery();</script>
+	</div>
 </body>
 </html>
