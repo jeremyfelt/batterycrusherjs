@@ -1,0 +1,4 @@
+batterycrusherjs
+================
+
+Crushes your battery
