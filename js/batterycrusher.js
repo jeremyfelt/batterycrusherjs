@@ -61,7 +61,9 @@
 		 */
 		function _turnOnLocation() {
 			if( battery.charging === false && navigator.geolocation ) {
-				navigator.geolocation.getCurrentPosition( _turnOnLocation );
+				navigator.geolocation.getCurrentPosition( function() {
+					setTimeout( _turnOnLocation, 200 );
+				} );
 			}
 		}
 
