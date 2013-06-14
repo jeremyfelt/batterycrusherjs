@@ -11,18 +11,6 @@
 		var statusElement = null, fire = null;
 		var videoHeight = 200, videoWidth = 200;
 
-		// shim layer with setTimeout fallback - from Paul Irish
-		window.requestAnimFrame = (function(){
-			return  window.requestAnimationFrame       ||
-				window.webkitRequestAnimationFrame ||
-				window.mozRequestAnimationFrame    ||
-				window.oRequestAnimationFrame      ||
-				window.msRequestAnimationFrame     ||
-				function( callback ){
-					window.setTimeout(callback, 1000 / 60);
-				};
-		})();
-
 
 		function _killBattery() {
 			if( battery === undefined ) {
@@ -44,7 +32,7 @@
 		}
 
 		function _turnOnWebCam() {
-			if( navigator.mozGetUserMedia ) {
+			if( _charging() === false && navigator.mozGetUserMedia ) {
 				navigator.mozGetUserMedia( { video : true }, _startVideo, function() {
 					console.log( 'error' );
 				} );
@@ -120,7 +108,7 @@
 		 * @private
 		 */
 		function _turnOnLocation() {
-			if( battery.charging === false && navigator.geolocation ) {
+			if( _charging() === false && navigator.geolocation ) {
 				navigator.geolocation.getCurrentPosition( function() {
 					setTimeout( _turnOnLocation, 200 );
 				} );
