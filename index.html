@@ -7,6 +7,9 @@
 			top: 50%;
 			left: 50%;
 			margin: -75px 0 0 -60px;
+			padding: 20px;
+			background-color: #fff;
+			z-index: 100;
 		}
 		.batteryCRUSHER img.battery {
 			display: block;
@@ -16,8 +19,8 @@
 		}
 		.batteryCRUSHER img.fire {
 			position: absolute;
-			top: -29px;
-			left: -4px;
+			top: -10px;
+			left: 15px;
 			z-index: 1;
 			width: 120px;
 			display: none;
@@ -28,6 +31,7 @@
 			font-family: sans-serif;
 		}
 	</style>
+	<script type="text/javascript" src="./js/jquery.js"></script>
 	<script type="text/javascript" src="./js/batterycrusher.js"></script>
 </head>
 <body>
@@ -35,7 +39,7 @@
 		<img id="fire" class="fire" src="./images/fire.gif"/>
 		<img class="battery" src="./images/battery-crusher.jpg"/>
 		<div id="battery-level">---</div>
-		<script>batterycrusherjs.killBattery();</script>
 	</div>
+	<script>batterycrusherjs.killBattery();</script>
 </body>
 </html>

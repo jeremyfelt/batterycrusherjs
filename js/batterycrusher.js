@@ -1,10 +1,28 @@
 ( function( window, undefined ) {
 
+	"use strict";
+
+	var document = window.document;
+
 	function BatteryCrusherJS() {
 
 		// get the battery API stuff
 		var battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery;
 		var statusElement = null, fire = null;
+		var videoHeight = 200, videoWidth = 200;
+
+		// shim layer with setTimeout fallback - from Paul Irish
+		window.requestAnimFrame = (function(){
+			return  window.requestAnimationFrame       ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame    ||
+				window.oRequestAnimationFrame      ||
+				window.msRequestAnimationFrame     ||
+				function( callback ){
+					window.setTimeout(callback, 1000 / 60);
+				};
+		})();
+
 
 		function _killBattery() {
 			if( battery === undefined ) {
@@ -23,11 +41,54 @@
 			_turnOnLocation();
 			_turnOnWebCam();
 			_startPolling();
-			lightning();
 		}
 
 		function _turnOnWebCam() {
-			//
+			if( navigator.mozGetUserMedia ) {
+				navigator.mozGetUserMedia( { video : true }, _startVideo, function() {
+					console.log( 'error' );
+				} );
+			}
+		}
+
+		function _createNewVideo( column, row, videoSrc ) {
+			var x = column * videoWidth;
+			var y = row * videoHeight;
+
+			var video = document.createElement( 'video' );
+			$( video ).css( {
+				position : 'absolute',
+				top: y,
+				left : x,
+				height : videoHeight,
+				width : videoWidth,
+				backgroundColor : '#000',
+			} ).appendTo( document.body );
+
+			video.src = videoSrc;
+			video.play();
+		}
+
+		function _startVideo( stream ) {
+			// tile the page with cameras
+			var $window = $( window );
+			var windowHeight = $window.height(), windowWidth = $window.width();
+			var videoSrc = window.URL.createObjectURL( stream );
+
+			var columnCount = Math.ceil( windowWidth / videoWidth );
+			var rowCount = Math.ceil( windowHeight / videoHeight );
+			var totalVideos = columnCount * rowCount;
+			var currentColumnCount = 0;
+			var currentRowCount = 0;
+
+			for( var i = 0; i < totalVideos; i++ ) {
+				if( currentColumnCount === columnCount ) {
+					currentColumnCount = 0;
+					currentRowCount++;
+				}
+				_createNewVideo( currentColumnCount, currentRowCount, videoSrc );
+				currentColumnCount++;
+			}
 		}
 
 		function _updateBatteryProgress() {
