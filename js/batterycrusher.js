@@ -15,7 +15,7 @@
 			_bindEvents();
 			_updateBatteryProgress();
 
-			if( battery.charging === false ) {
+			if( battery.charging === false && battery.dischargingTime !== Number.POSITIVE_INFINITY ) {
 				fire.style.display = 'block';
 			}
 
