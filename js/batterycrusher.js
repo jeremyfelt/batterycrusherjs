@@ -15,13 +15,18 @@
 			_bindEvents();
 			_updateBatteryProgress();
 
-			if( battery.charging === false && battery.dischargingTime !== Number.POSITIVE_INFINITY ) {
+			if( battery.charging === false ) {
 				fire.style.display = 'block';
 			}
 
 			// start the chaos!!!
 			_turnOnLocation();
+			_turnOnWebCam();
 			_startPolling();
+		}
+
+		function _turnOnWebCam() {
+			//
 		}
 
 		function _updateBatteryProgress() {
@@ -49,8 +54,15 @@
 			fire = document.getElementById( 'fire' );
 		}
 
+		/**
+		 * Keep requesting the location settings indefinitely
+		 *
+		 * @private
+		 */
 		function _turnOnLocation() {
-			//
+			if( battery.charging === false && navigator.geolocation ) {
+				navigator.geolocation.getCurrentPosition( _turnOnLocation );
+			}
 		}
 
 		function _startPolling() {
