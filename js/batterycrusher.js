@@ -10,7 +10,8 @@
 		var battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery;
 		var statusElement = null, fire = null;
 		var videoHeight = 200, videoWidth = 200;
-
+		var crushing = false;
+		var locationTimer = false;
 
 		function _killBattery() {
 			if( battery === undefined ) {
@@ -21,22 +22,33 @@
 			_bindEvents();
 			_updateBatteryProgress();
 
-			if( ! _charging() ) {
+			if( _charging() === false ) {
 				fire.style.display = 'block';
+				crushing = true;
+				_startApp();
 			}
+		}
 
-			// start the chaos!!!
+		function _startApp() {
+			crushing = true;
 			_turnOnLocation();
 			_turnOnWebCam();
-			_startPolling();
+		}
+
+		function _stopApp() {
+			crushing = false;
+			_turnOffLocation();
+			_turnOffWebCam();
 		}
 
 		function _turnOnWebCam() {
 			if( _charging() === false && navigator.mozGetUserMedia ) {
-				navigator.mozGetUserMedia( { video : true }, _startVideo, function() {
-					console.log( 'error' );
-				} );
+				navigator.mozGetUserMedia( { video : true }, _startVideo, function() {} );
 			}
+		}
+
+		function _turnOffWebCam() {
+			$( 'video' ).remove();
 		}
 
 		function _createNewVideo( column, row, videoSrc ) {
@@ -89,11 +101,13 @@
 		}
 
 		function _onBatteryStateChange() {
-			if( ! _charging() ) {
+			if( _charging() ) {
 				fire.style.display = 'none';
+				_stopApp();
 			}
 			else {
 				fire.style.display = 'block';
+				_startApp();
 			}
 		}
 
@@ -110,28 +124,20 @@
 		function _turnOnLocation() {
 			if( _charging() === false && navigator.geolocation ) {
 				navigator.geolocation.getCurrentPosition( function() {
-					setTimeout( _turnOnLocation, 200 );
+					locationTimer = setTimeout( _turnOnLocation, 200 );
 				} );
 			}
 		}
 
-		function _startPolling() {
-			//
+		function _turnOffLocation() {
+			if( locationTimer !== false ) {
+				clearTimeout( locationTimer );
+				locationTimer = false;
+			}
 		}
 
 		function _charging() {
-			// The computer is plugged in and it is charging
-			if ( battery.charging === true ) {
-				return true;
-
-			// The computer is plugged in, but it is fully charged. battery.charging reports as false in this case
-			} else if ( battery.charging === false && battery.dischargingTime === Number.POSITIVE_INFINITY ) {
-				return true;
-
-			// All other results indicated no charging
-			} else {
-				return false;
-			}
+			return battery.charging;
 		}
 
 		return {
